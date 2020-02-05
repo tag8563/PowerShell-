@@ -1,0 +1,33 @@
+clear-host
+
+#module install or import
+
+If (!(Get-module AzureAD))
+{
+Install-Module -Name AzureAD
+}
+else
+{
+Import-Module AzureAD
+}
+
+#log in stuff
+
+$cred = Get-Credential
+Connect-AzureAD -credential $cred
+
+#loads users to variable
+
+$users = Get-AzureADUser
+
+#revokes tokens for all users
+
+foreach ($user in $users)
+{
+#write-host $user
+Revoke-AzureADUserAllRefreshToken -ObjectId $user.ObjectId
+}
+
+#Future :
+#take csv file for users
+#individual users
