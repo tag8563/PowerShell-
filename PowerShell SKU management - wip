@@ -1,33 +1,35 @@
 #ENTERPRISEPACK = e3 in powershell
 #AccountSkuId = $ASIvar 
 
-#run first
+#set up stuff
 
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -force
 
+If (!(Get-module MSOnline))
+{
 Install-Module -Name MSOnline 
+}
+else
+{
+Import-Module MSOnline
+}
 
 $Msolcred = Get-credential
+
 Connect-MsolService -Credential $MsolCred
 
-
-#run second
+#removes E3
 
 foreach ($msolUser in (import-csv c:\desktop\userlist.csv)){
-
 $ASIvar = Get-MsolAccountSku | Where-Object {$_.SkuPartNumber -eq "ENTERPRISEPACK"} | select -ExpandProperty AccountSkuId
-
 Set-MsolUserLicense -UserPrincipalName $msolUser.UserPrincipalName -RemoveLicenses $ASIvar
-
 }
 
-#run third
-
+#re assigns e3
 foreach ($msolUser in (import-csv c:\desktop\userlist.csv)){
-
 $ASIvar = Get-MsolAccountSku | Where-Object {$_.SkuPartNumber -eq "ENTERPRISEPACK"} | select -ExpandProperty AccountSkuId
-
 Set-MsolUserLicense -UserPrincipalName $msolUser.UserPrincipalName -AddLicenses $ASIvar
-
-
 }
+#refrences
+#Product names and service plan identifiers for licensing
+#https://docs.microsoft.com/en-us/azure/active-directory/users-groups-roles/licensing-service-plan-reference
