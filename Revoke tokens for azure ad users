@@ -1,5 +1,7 @@
 clear-host
 
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -force
+
 #module install or import
 
 If (!(Get-module AzureAD))
