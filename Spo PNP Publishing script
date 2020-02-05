@@ -1,3 +1,6 @@
+
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -force
+
 #install or import SPO powershell module
 If (!(Add-PSSnapIn Microsoft.SharePoint.PowerShell))
 {
