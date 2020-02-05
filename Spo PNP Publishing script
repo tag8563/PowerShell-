@@ -1,0 +1,46 @@
+#install or import SPO powershell module
+If (!(Add-PSSnapIn Microsoft.SharePoint.PowerShell))
+{
+Install-Module -Name Microsoft.Online.SharePoint.PowerShell
+}
+else
+{
+Add-PSSnapIn Microsoft.SharePoint.PowerShell
+}
+
+#import or install SPO PNP module
+
+If (!(Get-Module SharePointPnPPowerShellOnline))
+{
+Install-Module -Name Microsoft.Online.SharePoint.PowerShell
+}
+else
+{
+Import-Module SharePointPnPPowerShellOnline
+}
+
+#Takes SPO admin url to login
+[int]$SPOurl = [Microsoft.VisualBasic.Interaction]::InputBox('Enter you Sharepoint Admin URL E.G. https://contoso-admin.sharepoint.com', 'URL')
+#connects
+Connect-SPOService -Url $SPOurl 
+
+#takes site publishing url
+[int]$PNPurl = [Microsoft.VisualBasic.Interaction]::InputBox('Enter you Sharepoint Publishing URL E.G. https://contoso.sharepoint.com/sites/Publishing', 'URL')
+#connects to site
+Connect-PnPOnline -url $PNPurl
+
+#turns on PNP publish
+Enable-PnPFeature -Identity dffaae84-60ee-413a-9600-1cf431cf0560 -force #RollupPages 
+Enable-PnPFeature -Identity 22a9ef51-737b-4ff2-9346-694633fe4416 -force #Publishing
+Enable-PnPFeature -Identity f6924d36-2fa8-4f0b-b16d-06b7250180fa -force -Scope site #SharePoint Server Publishing Infrastructure of Site Collection
+Enable-PnPFeature -Identity 94c94ca6-b32f-4da9-a9e3-1f3d343d7ecb -force -Scope web #SharePoint Server Publishing Infrastructure of Site 
+
+#refrences
+#Enable publishing features - using spo gui with out ps
+#https://support.office.com/en-us/article/Enable-publishing-features-479677A6-8B33-4AC7-907D-071C1C7E4518
+
+#PnP PowerShell overview
+#https://docs.microsoft.com/en-us/powershell/sharepoint/sharepoint-pnp/sharepoint-pnp-cmdlets?view=sharepoint-ps
+
+#Enable pnp via powershell
+#https://blogit.create.pt/fabiocarvalho/2017/07/28/activating-all-publishing-feature-programmatically-powershell-sharepoint-2010-2013-2016-online/
