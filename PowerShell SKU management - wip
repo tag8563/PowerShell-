@@ -1,0 +1,33 @@
+#ENTERPRISEPACK = e3 in powershell
+#AccountSkuId = $ASIvar 
+
+#run first
+
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -force
+
+Install-Module -Name MSOnline 
+
+$Msolcred = Get-credential
+Connect-MsolService -Credential $MsolCred
+
+
+#run second
+
+foreach ($msolUser in (import-csv c:\desktop\userlist.csv)){
+
+$ASIvar = Get-MsolAccountSku | Where-Object {$_.SkuPartNumber -eq "ENTERPRISEPACK"} | select -ExpandProperty AccountSkuId
+
+Set-MsolUserLicense -UserPrincipalName $msolUser.UserPrincipalName -RemoveLicenses $ASIvar
+
+}
+
+#run third
+
+foreach ($msolUser in (import-csv c:\desktop\userlist.csv)){
+
+$ASIvar = Get-MsolAccountSku | Where-Object {$_.SkuPartNumber -eq "ENTERPRISEPACK"} | select -ExpandProperty AccountSkuId
+
+Set-MsolUserLicense -UserPrincipalName $msolUser.UserPrincipalName -AddLicenses $ASIvar
+
+
+}
